@@ -42,6 +42,16 @@ class Student:
     else:
       return('Ошибка')
 #---------------------------------------
+#Сравниваем среднюю оценку студента за задания с оценкой лектора за лекции:
+  def __lt__(self, lecturer):
+    self.calc_average_grade()
+    lecturer.calc_average_grade()
+    return self.average_grade < lecturer.average_grade
+  def __gt__(self, lecturer):
+    self.calc_average_grade()
+    lecturer.calc_average_grade()
+    return self.average_grade > lecturer.average_grade
+#---------------------------------------
 #---------------------------------------
 class Mentor:
   def __init__(self, name, surname):
@@ -93,14 +103,12 @@ class Reviewer(Mentor):
 #---------------------------------------
 #---------------------------------------
 #---------------------------------------
-#Сравниваем среднюю оценку у студента от проверяющих, и у лектора от студентов:
+#Сравниваем студента и лектора по их средним оценкам, используя магический метод:
 def comparsion(student, lecturer):
   if isinstance(student, Student) and isinstance(lecturer, Lecturer):
-    student.calc_average_grade()
-    lecturer.calc_average_grade()
-    if student.average_grade > lecturer.average_grade:
+    if student > lecturer:
       print(f'У студента {student.name} {student.surname} средняя оценка за д/з выше, чем у лектора {lecturer.name} {lecturer.surname} за его лекции\n')
-    elif student.average_grade < lecturer.average_grade:
+    elif student < lecturer:
       print(f'У студента {student.name} {student.surname} средняя оценка за д/з ниже, чем у лектора {lecturer.name} {lecturer.surname} за его лекции\n')
     else:
       print(f'У студента {student.name} {lecturer.surname} и лектора {lecturer.name} {lecturer.surname} одинаковая средняя оценка за д/з и лекции соответственно\n')
@@ -142,18 +150,20 @@ reviewer_Zlata.add_course('Python')
 #---------------------------------------
 #Проверим все методы.
 #Студенты оценивают лекторов:
-student_Sasha.rate_lecturer(lecturer_Sergei, 'Python', 6)
+student_Sasha.rate_lecturer(lecturer_Sergei, 'Python', 8)
 student_Sasha.rate_lecturer(lecturer_Anna, 'Python', 5)
-student_Nastya.rate_lecturer(lecturer_Sergei, 'Python', 9)
+student_Nastya.rate_lecturer(lecturer_Sergei, 'Python', 4)
 student_Nastya.rate_lecturer(lecturer_Anna, 'Python', 9)
 #Проверяющие оценивают студентов:
 reviewer_George.rate_student(student_Sasha, 'Python', 8)
 reviewer_George.rate_student(student_Nastya, 'Python', 10)
 reviewer_Zlata.rate_student(student_Sasha, 'Python', 4)
 reviewer_Zlata.rate_student(student_Nastya, 'Python', 8)
-#Сравним средние оценки, например, студента Саши и лектора Анны, или студента Насти и лектора Сергея, или студента Саши и студента Насти (в посл. случае будет ошибка)
-comparsion(student_Sasha, lecturer_Anna)
-comparsion(student_Nastya, lecturer_Sergei)
+#Сравним средние оценки:
+comparsion(student_Sasha, lecturer_Anna) #тут результат "ниже"
+comparsion(student_Nastya, lecturer_Sergei) #тут выше
+comparsion(student_Sasha, lecturer_Sergei) #тут равно
+#Тут сравним студента со студентом и получим ошибку
 comparsion(student_Sasha, student_Nastya)
 #---------------------------------------
 #---------------------------------------
